@@ -1,0 +1,4 @@
+pulang;leila;gramed;555;90
+red;lop;red;456;77
+pulang;tere liye;gramed;2019;89
+laut;leila;gramed;2021;100
