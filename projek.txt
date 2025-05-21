@@ -1,3 +1,4 @@
-hujan;leila;gramed;2019;100
-pulang;tere liye;gramed;2017;98
-ily;alice;gramed;2024;198
+LAUT BERCERITA;leila;matahari;1990;239;1
+bumi;tere liye;gramedia;2017;58;0
+hujan;tere liye;gramedia;2020;100;0
+pulang;alexander manoban;gramedia;2008;140;0
