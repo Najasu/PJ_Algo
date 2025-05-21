@@ -29,7 +29,7 @@ void bubbleSortTahun(Buku *head) {
 
         while (current->next != NULL) {
             if (current->tahun < current->next->tahun) {
-                // Tukar semua data
+                // tukar semua data
                 swap(current->judul,    current->next->judul);
                 swap(current->penulis,  current->next->penulis);
                 swap(current->penerbit, current->next->penerbit);
