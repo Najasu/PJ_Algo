@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 LAUT BERCERITA;leila;matahari;1990;239;1
 bumi;tere liye;gramedia;2017;57;1
+=======
+KUNING;rumahsakit;matahari;2005;91;0
+LAUT BERCERITA;leila;matahari;1990;240;0
+bumi;tere liye;gramedia;2017;58;0
+>>>>>>> 501de9306a29301a6bbaa363625b09bfa8fed20a
 hujan;tere liye;gramedia;2020;100;0
 pulang;alexander manoban;gramedia;2008;140;0
