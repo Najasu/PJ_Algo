@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "c:/Users/Rachma/OneDrive/Documents/PJ_ALPRO",
-      "program": "c:/Users/Rachma/OneDrive/Documents/PJ_ALPRO/build/Debug/outDebug",
+      "cwd": "c:/Users/Rachma/OneDrive/Documents/Prak Alpro SI/tugas-1",
+      "program": "c:/Users/Rachma/OneDrive/Documents/Prak Alpro SI/tugas-1/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [

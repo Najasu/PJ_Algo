@@ -1,4 +1,4 @@
 LAUT BERCERITA;leila;matahari;1990;239;1
-bumi;tere liye;gramedia;2017;58;0
+bumi;tere liye;gramedia;2017;57;1
 hujan;tere liye;gramedia;2020;100;0
 pulang;alexander manoban;gramedia;2008;140;0
