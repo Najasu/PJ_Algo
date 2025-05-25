@@ -1,4 +1,4 @@
-#include<iostream>
+#include <iostream>
 #include <cstdlib> 
 #include <stdio.h>
 #include <cstring>
@@ -180,8 +180,8 @@ void tampilkanBuku() {
     cout<<"\n========================================="<<endl;
     cout<<"|               Data Buku                 |"<<endl;
     cout<<"==========================================="<<endl;
-    cout<<"|1. Berdasarakan Judul (Ascending)        |"<<endl;
-    cout<<"|2. Berdasarakan Tahun Terbit (Descending)|"<<endl;
+    cout<<"|1. Berdasarkan Judul (Ascending)         |"<<endl;
+    cout<<"|2. Berdasarkan Tahun Terbit (Descending) |"<<endl;
     cout<<"==========================================="<<endl;
     cout<<"Pilih: "; cin>>pilihan;
     system("cls");
@@ -265,6 +265,47 @@ void editBuku() { // fungsi untuk mengedit data buku
     cout << "Data buku berhasil diubah!\n";
 }
 
+void hapusBuku() { // fungsi untuk menghapus data buku
+    char judul[100];
+    bacadata();
+    cout << "Masukkan judul buku yang ingin dihapus: ";
+    cin.ignore();
+    cin.getline(judul, 100);
+
+    Buku* temp = kepala;
+    while (temp != NULL) {
+        if (strcmp(temp->judul, judul) == 0) {
+            if (temp->dipinjem > 0) {
+                cout << "Buku sedang dipinjam, tidak bisa dihapus!\n";
+                return;
+            }
+
+            // update pointer prev dan next
+            if (temp->prev != NULL)
+                temp->prev->next = temp->next;
+            else
+                kepala = temp->next;
+
+            if (temp->next != NULL)
+                temp->next->prev = temp->prev;
+
+            delete temp;
+            projek = fopen("projek.txt", "w");
+            for (Buku* curr = kepala; curr != NULL; curr = curr->next) {
+                fprintf(projek, "%s;%s;%s;%d;%d;%d\n",
+                        curr->judul, curr->penulis, curr->penerbit,
+                        curr->tahun, curr->stock, curr->dipinjem);
+            }
+            fclose(projek);
+
+            cout << "Buku berhasil dihapus.\n";
+            return;
+        }
+        temp = temp->next;
+    }
+
+    cout << "Buku tidak ditemukan.\n";
+}
 
 void bacaPeminjam() { // fungsi untuk membaca data dari file peminjam.txt 
     FILE *file = fopen("peminjam.txt", "r");
@@ -482,14 +523,15 @@ int main() {
     cout<<"===================================="<<endl;
     cout<<"|    Perpustakaan Kecil-Kecilan    |"<<endl;
     cout<<"===================================="<<endl;
-    cout<<"|1. Input data buku                |"<<endl;
+    cout<<"|1. Tambah buku                    |"<<endl;
     cout<<"|2. Tampilkan data buku            |"<<endl;
     cout<<"|3. Cari buku                      |"<<endl;
     cout<<"|4. Edit buku                      |"<<endl;
-    cout<<"|5. Peminjaman buku                |"<<endl;
-    cout<<"|6. Tampilkan data peminjam        |"<<endl;
-    cout<<"|7. Pengembalian buku              |"<<endl;
-    cout<<"|8. Exit                           |"<<endl;
+    cout<<"|5. Hapus buku                     |"<<endl;
+    cout<<"|6. Peminjaman buku                |"<<endl;
+    cout<<"|7. Tampilkan data peminjam        |"<<endl;
+    cout<<"|8. Pengembalian buku              |"<<endl;
+    cout<<"|9. Exit                           |"<<endl;
     cout<<"===================================="<<endl;
     cout<<"pilih menu: "; cin>>menu;
     system("cls");
@@ -512,20 +554,24 @@ int main() {
         case 4 :
             editBuku();
         break;
-        
+
         case 5 :
-            pinjamBuku();
+            hapusBuku();
         break;
         
         case 6 :
-            tampilkanPeminjam();
+            pinjamBuku();
         break;
         
         case 7 :
-            kembaliBuku();
+            tampilkanPeminjam();
         break;
         
         case 8 :
+            kembaliBuku();
+        break;
+        
+        case 9 :
             cout<<"Terima kasih!";
             exit(0);
         break;
