@@ -200,7 +200,7 @@ void tampilkanBuku() {
         cout << "Tidak ada data buku!" << endl;
         return;
     }
-    cout<<"\n==========================================="<<endl;
+    cout<<"\n========================================="<<endl;
     cout<<"|               Data Buku                 |"<<endl;
     cout<<"==========================================="<<endl;
     cout<<"|1. Berdasarakan Judul (Ascending)        |"<<endl;
