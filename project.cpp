@@ -15,11 +15,6 @@ struct Buku{
     Buku *next;
 };
 
-Buku *kepala = NULL;
-Buku *ekor = NULL;
-Buku *awal, *akhir, *hapus, *NB, *depan, *list;
-FILE *projek;
-
 struct Peminjaman {
     char NIK[20];
     char nama[100];
@@ -27,6 +22,10 @@ struct Peminjaman {
     int jumlah;
     Peminjaman* next;
 };
+
+Buku *kepala = NULL;
+Buku *ekor = NULL; 
+FILE *projek;
 
 Peminjaman* daftarPinjam = NULL;
 
@@ -71,7 +70,7 @@ void bubbleSortTahun(Buku *head) {
     } while (swapped);
 }
 
-void sisipNodeJudul(Buku *baru) {
+void sisipNodeJudul(Buku *baru) { // fungsi untuk sisip node based on judul
     if (kepala == nullptr || strcmp(baru->judul, kepala->judul) < 0) {
         baru->next = kepala;
         if (kepala != nullptr) 
@@ -104,7 +103,7 @@ void bacadata() {
     if(fscanf(projek, "%[^;];%[^;];%[^;];%d;%d;%d\n",
                    baru->judul, baru->penulis, baru->penerbit,
                    &baru->tahun, &baru->stock, &baru->dipinjem) != EOF) {
-                sisipNodeJudul(baru);}
+                   sisipNodeJudul(baru);} // agar list yg udah urut berdasarkan judul disimpan di file
     }
     fclose(projek);
 }
@@ -147,7 +146,7 @@ void tambahbuku(){
             cin.ignore();
             baru->prev = NULL;
             baru->next = NULL;
-            sisipNodeJudul(baru);
+            sisipNodeJudul(baru); // memproses buku yg diinput agar diurut berdasarkan judul
 
             fprintf(projek, "%s;%s;%s;%d;%d;%d\n", 
             baru->judul, baru->penulis, baru->penerbit,
@@ -157,30 +156,30 @@ void tambahbuku(){
         fclose(projek);
 }
 
-Buku* salinList(Buku* head) {
+Buku* salinList(Buku* head) { // untuk membuat salinan dari linked list
     if (!head) return nullptr;
 
-    Buku* salinanKepala = new Buku(*head);
-    salinanKepala->prev = nullptr;
-    salinanKepala->next = nullptr;
+    Buku* salinanHead = new Buku(*head); // buat node baru isinya sama dengan head
+    salinanHead->prev = nullptr;
+    salinanHead->next = nullptr;
 
-    Buku* currAsli = head->next;
-    Buku* currSalin = salinanKepala;
+    Buku* currAsli = head->next; // list lama
+    Buku* currSalin = salinanHead; // list baru
 
     while (currAsli != nullptr) {
-        Buku* baru = new Buku(*currAsli);
-        baru->prev = currSalin;
-        baru->next = nullptr;
-        currSalin->next = baru;
-        currSalin = baru;
+        Buku* baru = new Buku(*currAsli); //buat node baru dengan data yg ditunjuk oleh currAsli
+        baru->prev = currSalin; // set prev node baru ke currSalin
+        baru->next = nullptr; 
+        currSalin->next = baru; // set next node currSalin ke node baru
+        currSalin = baru; 
 
         currAsli = currAsli->next;
     }
 
-    return salinanKepala;
+    return salinanHead;
 }
 
-void cetaklist(Buku *head){
+void cetaklist(Buku *head){ //cetak yg ada di list
     int i = 1;
     for(Buku *temp = head; temp != NULL; temp = temp->next) {
         cout << "Buku ke-" << i++ << endl;
