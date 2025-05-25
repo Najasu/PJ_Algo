@@ -29,23 +29,6 @@ FILE *projek;
 
 Peminjaman* daftarPinjam = NULL;
 
-bool judulSudahAda(const char* judul) {
-    for (Buku *temp = kepala; temp != NULL; temp = temp->next) {
-        if (strcmp(temp->judul, judul) == 0) return true;
-    }
-    return false;
-}
-
-bool validasiNIK(const char* nik) {
-    int length = strlen(nik);
-    if (length != 16) return false;
-    for (int i = 0; i < length; i++) {
-        if (!isdigit(nik[i])) return false;
-    }
-    return true;
-}
-
-
 void bubbleSortTahun(Buku *head) {
     if (head == NULL) return;
 
@@ -129,11 +112,6 @@ void tambahbuku(){
             
             cout << "Judul       : ";
             cin.getline(baru->judul, 100);
-            if (judulSudahAda(baru->judul)) {
-                cout << "Judul sudah ada! Gagal menambahkan.\n";
-                delete baru;
-                continue;
-            }
             cout << "Penulis     : ";
             cin.getline(baru->penulis, 100);
             cout << "Penerbit    : ";
@@ -216,13 +194,13 @@ void tampilkanBuku() {
     }
 }
 
-void caribuku(){
+void caribuku(){ // fungsi untuk mencari buku yang tersedia
     char judul[100];
     cout << "Masukkan judul buku yang ingin dicari: ";
     cin.ignore();
     cin.getline(judul, 100);
     bool found = false;
-    for (Buku *temp = kepala; temp != NULL; temp = temp->next) {
+    for (Buku *temp = kepala; temp != NULL; temp = temp->next) { 
         if (strcmp(temp->judul, judul) == 0) {
             cout << "Buku ditemukan!" << endl;
             cout << "Judul   : " << temp->judul << endl;
@@ -239,7 +217,7 @@ void caribuku(){
     }
 }
 
-void editBuku() {
+void editBuku() { // fungsi untuk mengedit data buku
     char judul[100];
     bacadata();
     cout << "Masukkan judul buku yang ingin diedit: ";
@@ -250,7 +228,7 @@ void editBuku() {
     for (Buku *temp = kepala; temp != NULL; temp = temp->next) {
         if (strcmp(temp->judul, judul) == 0) {
             if (temp->dipinjem > 0) {
-                cout << "Buku sedang dipinjam (" << temp->dipinjem << "x), tidak bisa diedit!\n";
+                cout << "Buku sedang dipinjam (" << temp->dipinjem << "x), tidak bisa diedit!\n"; // buku hanya bisa diedit jika sedang tidak dipinjam
                 return;
             }
             cout << "Buku ditemukan! Masukkan data baru:\n";
@@ -287,29 +265,41 @@ void editBuku() {
     cout << "Data buku berhasil diubah!\n";
 }
 
-void bacaPeminjam() {
+
+void bacaPeminjam() { // fungsi untuk membaca data dari file peminjam.txt 
     FILE *file = fopen("peminjam.txt", "r");
     if (!file) {
         daftarPinjam = NULL;
         return;
     }
     
-    daftarPinjam = NULL;  
-    char line[256];
+    daftarPinjam = NULL; // reset linked list peminjam
+    char baris[256];
 
-    while (fgets(line, sizeof(line), file)) {
+    // Baca file baris per baris dan simpan ke linked list
+    while (fgets(baris, sizeof(baris), file)) {
         Peminjaman* baru = new Peminjaman;
         baru->next = NULL;
 
-        sscanf(line, "%[^;];%[^;];%[^;];%d", baru->NIK, baru->nama, baru->judul, &baru->jumlah);
+        sscanf(baris, "%[^;];%[^;];%[^;];%d", baru->NIK, baru->nama, baru->judul, &baru->jumlah);
 
+        // Masukkan ke awal linked list
         baru->next = daftarPinjam;
         daftarPinjam = baru;
     }
     fclose(file);
 }
 
-void pinjamBuku() {
+bool validasiNIK(const char* nik) { // untuk memaksa NIK harus 16 digit
+    int length = strlen(nik);
+    if (length != 16) return false;
+    for (int i = 0; i < length; i++) {
+        if (!isdigit(nik[i])) return false;
+    }
+    return true;
+}
+
+void pinjamBuku() { // fungsi untuk peminjam buku dengan menginput NIK, nama peminjam, dan judul buku yang dipinjam
     char judul[100], nik[20], nama[100];
     int jumlahPinjam;
     bacadata();
@@ -338,15 +328,17 @@ void pinjamBuku() {
             }
 
             if (temp->stock >= jumlahPinjam) {
+                // update data stok dan jumlah dipinjam
                 temp->stock -= jumlahPinjam;
                 temp->dipinjem += jumlahPinjam;
 
-                FILE *peminjamFile = fopen("peminjam.txt", "a");
+                // simpan data ke file peminjam.txt
+                FILE *peminjamFile = fopen("peminjam.txt", "a"); 
                 if (peminjamFile != NULL) {
                     fprintf(peminjamFile, "%s;%s;%s;%d\n", nik, nama, judul, jumlahPinjam);
                     fclose(peminjamFile);
                 }
-
+                // update file projek.txt dengan data terbaru
                 projek = fopen("projek.txt", "w");
                 for (Buku *tulis = kepala; tulis != NULL; tulis = tulis->next) {
                     fprintf(projek, "%s;%s;%s;%d;%d;%d\n",
@@ -366,11 +358,11 @@ void pinjamBuku() {
     cout << "Buku tidak ditemukan!\n";
 }
 
-void kembaliBuku() {
+void kembaliBuku() { // pengembalian buku yang sudah di pinjam
     char nik[20], judul[100];
     int jumlahKembali;
 
-    bacaPeminjam();
+    bacaPeminjam(); // mengambil data dari 2 file
     bacadata();
 
     cout << "Masukkan NIK peminjam (16 digit angka): ";
@@ -393,6 +385,7 @@ void kembaliBuku() {
         return;
     }
 
+    // cari data peminjam berdasarkan NIK dan judul buku
     Peminjaman* prevPinjam = nullptr;
     Peminjaman* currPinjam = daftarPinjam;
     bool peminjamanDitemukan = false;
@@ -419,6 +412,7 @@ void kembaliBuku() {
 
     currPinjam->jumlah -= jumlahKembali;
 
+    // menghapus data jika jumlah pinjaman jadi 0
     if (currPinjam->jumlah == 0) {
         if (prevPinjam == nullptr) {
             daftarPinjam = currPinjam->next;
@@ -428,6 +422,7 @@ void kembaliBuku() {
         delete currPinjam;
     }
 
+    // update stok buku
     bool bukuDitemukan = false;
     for (Buku* temp = kepala; temp != NULL; temp = temp->next) {
         if (strcmp(temp->judul, judul) == 0) {
@@ -452,17 +447,17 @@ void kembaliBuku() {
     fclose(projek);
 
     FILE* peminjamFile = fopen("peminjam.txt", "w");
-    Peminjaman* iter = daftarPinjam;
-    while (iter != nullptr) {
-        fprintf(peminjamFile, "%s;%s;%s;%d\n", iter->NIK, iter->nama, iter->judul, iter->jumlah);
-        iter = iter->next;
+    Peminjaman* curr = daftarPinjam;
+    while (curr != nullptr) {
+        fprintf(peminjamFile, "%s;%s;%s;%d\n", curr->NIK, curr->nama, curr->judul, curr->jumlah);
+        curr = curr->next;
     }
     fclose(peminjamFile);
 
     cout << "Berhasil mengembalikan " << jumlahKembali << " buku.\n";
 } 
 
-void tampilkanPeminjam() {
+void tampilkanPeminjam() { // fungsi untuk menampilkan data orang yang sedang meminjam
     bacaPeminjam();
     
     if (daftarPinjam == NULL) {
@@ -489,10 +484,10 @@ int main() {
     cout<<"===================================="<<endl;
     cout<<"|1. Input data buku                |"<<endl;
     cout<<"|2. Tampilkan data buku            |"<<endl;
-    cout<<"|3. Tampilkan data peminjaman      |"<<endl;
-    cout<<"|4. Cari buku                      |"<<endl;
-    cout<<"|5. Edit buku                      |"<<endl;
-    cout<<"|6. Peminjaman buku                |"<<endl;
+    cout<<"|3. Cari buku                      |"<<endl;
+    cout<<"|4. Edit buku                      |"<<endl;
+    cout<<"|5. Peminjaman buku                |"<<endl;
+    cout<<"|6. Tampilkan data peminjam        |"<<endl;
     cout<<"|7. Pengembalian buku              |"<<endl;
     cout<<"|8. Exit                           |"<<endl;
     cout<<"===================================="<<endl;
@@ -511,19 +506,19 @@ int main() {
         break;
         
         case 3 :
-            tampilkanPeminjam();
-        break;
-        
-        case 4 :
             caribuku();
         break;
         
-        case 5 :
+        case 4 :
             editBuku();
         break;
         
-        case 6 :
+        case 5 :
             pinjamBuku();
+        break;
+        
+        case 6 :
+            tampilkanPeminjam();
         break;
         
         case 7 :
