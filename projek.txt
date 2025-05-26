@@ -1,5 +1,4 @@
-Butterfly;ale;gramedia;2019;80;0
+Butterfly;ale;gramedia;2019;79;1
 Funiculi Funicula;Toshikazu Kawaguchi;gramedia;2015;130;0
 bumi;tere liye;gramedia;2017;58;0
-hujan;tere liye;gramedia;2020;100;0
 the prodigy;leonard;gramedia;2020;95;0
